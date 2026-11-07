@@ -13,6 +13,7 @@ from logger import Logger
 from risk import RiskManager, RiskError
 from portfolio import Portfolio, PositionChecker
 from signals import BarData, evaluate_momentum
+from telegram_notify import notify_open, notify_close, notify_kill_switch, configured
 
 POLL_SECONDS = 15  # 15m candle but poll for fills/PL several times per minute
 
@@ -98,6 +99,7 @@ def main():
             # ---- kill switch ----
             if risk.check_kill_switch(equity):
                 port.liquidate_all(prices, log, "KILL_SWITCH")
+                notify_kill_switch(port.equity(prices), risk.current_drawdown(port.equity(prices)))
                 log.error("risk", "Halted: kill switch engaged. Exiting.", fatal=True)
                 break
 
@@ -106,6 +108,13 @@ def main():
             closed = port.check_braces(prices, log)
             for sym, reason, fill in closed:
                 log.info("state", f"Bracket {sym} closed via {reason} @ {fill}")
+                # find the PnL for this close via the last closed trade
+                rows = log.query(
+                    "SELECT pnl FROM trades WHERE symbol=? AND exit_reason=? ORDER BY ts DESC LIMIT 1",
+                    (sym, reason))
+                pnl = rows[0][0] if rows and rows[0][0] is not None else 0.0
+                notify_close(sym, reason, fill, pnl,
+                             port.equity(prices), risk.current_drawdown(port.equity(prices)))
 
             # ---- risk budget per day ----
             # (simple: track realized today; demo keeps a running guard)
@@ -128,6 +137,7 @@ def main():
                     tp = entry + cfg.atr_tp_mult * atr_v
                     notional, qty = risk.position_size(entry, sl, equity)
                     port.place_entry(sym, "LONG", entry, qty, notional, sl, tp, log)
+                    notify_open(sym, "LONG", entry, qty, sl, tp)
 
             log.equity(port.equity(prices), risk.current_drawdown(port.equity(prices)))
             if args.once:

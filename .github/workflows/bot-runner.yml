@@ -20,6 +20,11 @@ jobs:
   run-bot:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      # Telegram notifications: token is a repo secret (never in code/git).
+      # chat_id is added the same way once you tell me the number.
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     steps:
       - uses: actions/checkout@v4
 
