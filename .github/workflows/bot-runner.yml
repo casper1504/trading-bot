@@ -1,0 +1,44 @@
+name: trading-bot-runner
+
+# Runs the paper bot every 15 minutes in GitHub's cloud, so it keeps evaluating
+# signals even when the local laptop is off. Each run:
+#   - pulls latest repo (with prior state.json)
+#   - runs the bot in one-shot mode (fetch data, eval, update paper account)
+#   - commits state.json back so the next run continues from the same account
+# Paper mode uses only public Binance data -> no secrets required.
+
+on:
+  schedule:
+    # Every 15 minutes (UTC). GitHub may delay scheduled runs under load.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:        # lets you trigger a run manually from the Actions tab
+
+permissions:
+  contents: write           # allow committing state.json back to the repo
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run bot (one-shot)
+        run: python bot.py --once
+
+      # Persist paper-account state so the next scheduled run continues from here.
+      - name: Commit state back
+        run: |
+          git config user.name "trading-bot"
+          git config user.email "trading-bot@users.noreply.github.com"
+          git add state.json trading_log.db 2>/dev/null || git add -A
+          if git diff --cached --quiet; then
+            echo "no state change to commit"
+          else
+            git commit -m "bot: persist paper state [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
+            git push
+          fi

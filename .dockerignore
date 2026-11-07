@@ -1,0 +1,11 @@
+# Never ship secrets, local state, or logs into the container image.
+.env
+.env.example
+state.json
+trading_log.db
+test_log.db
+test_state.json
+__pycache__/
+*.pyc
+bot_run.log
+.git/

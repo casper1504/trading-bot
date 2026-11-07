@@ -1,0 +1,1 @@
+# stdlib-only bot — no third-party packages required

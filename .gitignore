@@ -1,0 +1,10 @@
+# Local-only artifacts & secrets (never commit real credentials)
+.env
+.env.example
+state.json
+trading_log.db
+test_log.db
+test_state.json
+bot_run.log
+__pycache__/
+*.pyc
