@@ -25,29 +25,51 @@ class RateLimitError(ExchangeError):
 
 class APIClient:
     """Thin Binance REST client. Public endpoints need no auth (paper mode).
-    Signed private endpoints (live only)."""
+    Signed private endpoints (live only). Public data hosts are tried in order
+    with fallback, because api.binance.com geo-blocks some datacenter IPs
+    (e.g. GitHub Actions runners in the US) while data-api.binance.vision does not."""
+
+    # public-data hosts, tried in order; data-api.binance.vision is the
+    # geo-block-safe public mirror used when the primary is unreachable
+    PUBLIC_HOSTS = ("https://api.binance.com", "https://data-api.binance.vision",
+                    "https://api.binance.vision")
 
     def __init__(self, base_url: str | None = None):
-        self.base = base_url or (cfg.test_url if cfg.mode == "paper" else cfg.base_url)
         self.key = cfg.api_key
         self.secret = cfg.api_secret
+        self._private_host = base_url or (cfg.test_url if cfg.mode == "paper" else cfg.base_url)
+
+    def _hosts_for(self, signed: bool) -> tuple:
+        if signed:
+            return (self._private_host,)
+        return self.PUBLIC_HOSTS
 
     # ---- low level with retry / backoff ----
     def _request(self, method: str, path: str, params: dict | None = None,
                  signed: bool = False) -> dict | list:
         params = params or {}
-        url = self.base + path
+        qs = urllib.parse.urlencode(params)
 
         if signed:
             params["timestamp"] = int(time.time() * 1000)
             qs = urllib.parse.urlencode(params)
             params["signature"] = hmac.new(
                 self.secret.encode(), qs.encode(), hashlib.sha256).hexdigest()
+            qs = urllib.parse.urlencode(params)
 
-        qs = urllib.parse.urlencode(params)
-        full = f"{url}?{qs}" if qs else url
+        hosts = self._hosts_for(signed)
+        last_err = None
+        for host in hosts:
+            full = f"{host}{path}?{qs}" if qs else host + path
+            try:
+                return self._request_once(method, full, signed)
+            except ExchangeError as e:
+                last_err = e
+                # try the next host
+        raise last_err if last_err else ExchangeError("all hosts failed")
+
+    def _request_once(self, method: str, full: str, signed: bool) -> dict | list:
         req = urllib.request.Request(full, method=method)
-
         if signed:
             req.add_header("X-MBX-APIKEY", self.key)
 
@@ -77,15 +99,10 @@ class APIClient:
                 last_err = ExchangeError(f"network error: {e.reason}")
             except json.JSONDecodeError as e:
                 raise ExchangeError(f"bad json: {e}") from e
-            # backoff, but don't waste time waiting huge sleeps after last try
-            self._backoff(sleep_s, attempt)
+            # backoff within a host's retries
+            if attempt < MAX_RETRIES:
+                time.sleep(min(sleep_s, 30))
         raise last_err if last_err else ExchangeError("unknown request failure")
-
-    @staticmethod
-    def _backoff(secs: float, attempt: int):
-        # cap wait; on final attempt don't stall the loop
-        if attempt < MAX_RETRIES:
-            time.sleep(min(secs, 30))
 
     # ---- public data ----
     def ping(self) -> bool:
