@@ -65,7 +65,7 @@ class Config:
         get = os.environ.get
 
         def _symbols():
-            return [s.strip() for s in get("SYMBOLS", "BTC/USDT,ETH/USDT").split(",") if s.strip()]
+            return [s.strip() for s in get("SYMBOLS", "BTC/USDT,ETH/USDT,SOL/USDT,XRP/USDT,BNB/USDT").split(",") if s.strip()]
 
         return cls(
             symbols=_symbols(),
