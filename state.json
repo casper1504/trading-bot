@@ -1,0 +1,18 @@
+{
+  "cash": 1000.0,
+  "positions": {},
+  "pending_orders": {
+    "XRP/USDT-1794263511413": {
+      "symbol": "XRP/USDT",
+      "side": "LONG",
+      "price": 1.0955,
+      "qty": 1047.6387022149013,
+      "notional": 1147.6881982764244,
+      "sl": 1.0859547245354164,
+      "tp": 1.1145905509291667,
+      "placed": 1794263511,
+      "timeout": 60
+    }
+  },
+  "realized_pnl": 0.0
+}
