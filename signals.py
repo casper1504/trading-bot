@@ -102,9 +102,12 @@ def evaluate_momentum(bars: BarData) -> tuple:
             "trend_ema": trend[i], "rsi": r[i] if i < len(r) else None,
             "atr": at[i] if i < len(at) else None}
 
-    # Trend filter: only take longs above trend EMA, shorts below.
-    above_trend = close > trend[i]
-    below_trend = close < trend[i]
+    # Trend filter (optional): only take longs above trend EMA, shorts below.
+    if cfg.use_trend_filter:
+        above_trend = close > trend[i]
+        below_trend = close < trend[i]
+    else:
+        above_trend = below_trend = True
 
     if crossover(ema_fast, ema_slow, i) and above_trend:
         # RSI overbought filter for longs

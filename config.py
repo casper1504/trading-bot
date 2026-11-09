@@ -42,9 +42,10 @@ class Config:
     atr_period: int = 14
     atr_sl_mult: float = 1.5
     atr_tp_mult: float = 3.0
-    ema_fast: int = 12
-    ema_slow: int = 26
-    trend_ema: int = 200
+    ema_fast: int = 8
+    ema_slow: int = 21
+    trend_ema: int = 50
+    use_trend_filter: bool = False
     rsi_period: int = 14
     rsi_filter_high: float = 70.0
     rsi_filter_low: float = 30.0
@@ -84,9 +85,10 @@ class Config:
             atr_period=int(float(get("ATR_PERIOD", "14"))),
             atr_sl_mult=float(get("ATR_SL_MULT", "1.5")),
             atr_tp_mult=float(get("ATR_TP_MULT", "3.0")),
-            ema_fast=int(float(get("EMA_FAST", "12"))),
-            ema_slow=int(float(get("EMA_SLOW", "26"))),
-            trend_ema=int(float(get("TREND_EMA", "200"))),
+            ema_fast=int(float(get("EMA_FAST", "8"))),
+            ema_slow=int(float(get("EMA_SLOW", "21"))),
+            trend_ema=int(float(get("TREND_EMA", "50"))),
+            use_trend_filter=(get("USE_TREND_FILTER", "false").lower() in ("1","true","yes")),
             rsi_period=int(float(get("RSI_PERIOD", "14"))),
             rsi_filter_high=float(get("RSI_FILTER_HIGH", "70")),
             rsi_filter_low=float(get("RSI_FILTER_LOW", "30")),
