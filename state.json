@@ -1,17 +1,6 @@
 {
-  "cash": 998.8523118017235,
-  "positions": {
-    "XRP/USDT": {
-      "side": "LONG",
-      "qty": 1047.6387022149013,
-      "entry": 1.0956519000000002,
-      "sl": 1.0859547245354164,
-      "tp": 1.1145905509291667,
-      "notional": 1147.6881982764244,
-      "opened_ts": 1794279369442,
-      "trade_id": null
-    }
-  },
+  "cash": 2136.540510078148,
+  "positions": {},
   "pending_orders": {},
-  "realized_pnl": 0.0
+  "realized_pnl": -11.296824517143197
 }
