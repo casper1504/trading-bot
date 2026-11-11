@@ -96,7 +96,11 @@ class Portfolio:
 
     def _fill_entry(self, symbol, side, entry, qty, notional, sl, tp, log):
         fee = notional * cfg.taker_fee
-        self.cash -= fee
+        # Debit the FULL notional cost of the spot buy (cash -> base asset).
+        # On close the proceeds are credited back, so equity = cash + position value
+        # stays consistent across round-trips. (Previously only the fee was debited,
+        # which inflated cash on every close — a real accounting bug.)
+        self.cash -= notional
         # buy costs cash; short (spot) holds base asset qty position
         self.positions[symbol] = {
             "side": side, "qty": qty, "entry": entry, "sl": sl, "tp": tp,
