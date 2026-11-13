@@ -1,17 +1,6 @@
 {
-  "cash": -437.1361525657949,
-  "positions": {
-    "BNB/USDT": {
-      "side": "LONG",
-      "qty": 2.2518233066949667,
-      "entry": 638.21,
-      "sl": 633.7691542328083,
-      "tp": 647.0916915343836,
-      "notional": 1437.1361525657949,
-      "opened_ts": 1794591775613,
-      "trade_id": null
-    }
-  },
+  "cash": 989.9999999999998,
+  "positions": {},
   "pending_orders": {},
-  "realized_pnl": 0.0
+  "realized_pnl": -11.427136152565794
 }
