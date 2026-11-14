@@ -1,6 +1,18 @@
 {
   "cash": 989.9999999999998,
   "positions": {},
-  "pending_orders": {},
+  "pending_orders": {
+    "ETH/USDT-1794649282437": {
+      "symbol": "ETH/USDT",
+      "side": "LONG",
+      "price": 1909.91,
+      "qty": 0.7299908748127948,
+      "notional": 1394.216871713705,
+      "sl": 1896.3481866382388,
+      "tp": 1937.033626723523,
+      "placed": 1794649282,
+      "timeout": 60
+    }
+  },
   "realized_pnl": -11.427136152565794
 }
