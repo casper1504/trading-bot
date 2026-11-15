@@ -1,29 +1,27 @@
 {
-  "cash": 980.0999999999999,
-  "positions": {},
-  "pending_orders": {
-    "SOL/USDT-1794772419036": {
-      "symbol": "SOL/USDT",
+  "cash": -1264.2293119916685,
+  "positions": {
+    "SOL/USDT": {
       "side": "LONG",
-      "price": 71.82,
       "qty": 14.706364646386987,
-      "notional": 1056.2111089035134,
+      "entry": 72.61367500000001,
       "sl": 71.15355385673726,
       "tp": 73.15289228652546,
-      "placed": 1794772419,
-      "timeout": 60
+      "notional": 1056.2111089035134,
+      "opened_ts": 1794786011744,
+      "trade_id": null
     },
-    "XRP/USDT-1794772419473": {
-      "symbol": "XRP/USDT",
+    "XRP/USDT": {
       "side": "LONG",
-      "price": 0.9618,
       "qty": 1235.3069277273394,
-      "notional": 1188.118203088155,
+      "entry": 0.97521215,
       "sl": 0.953865939419581,
       "tp": 0.977668121160838,
-      "placed": 1794772419,
-      "timeout": 60
+      "notional": 1188.118203088155,
+      "opened_ts": 1794786011746,
+      "trade_id": null
     }
   },
+  "pending_orders": {},
   "realized_pnl": -22.7114530242795
 }
