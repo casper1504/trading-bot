@@ -22,6 +22,18 @@
       "trade_id": null
     }
   },
-  "pending_orders": {},
+  "pending_orders": {
+    "ETH/USDT-1794886536327": {
+      "symbol": "ETH/USDT",
+      "side": "LONG",
+      "price": 1835.37,
+      "qty": 0.8243715864964869,
+      "notional": 1513.026878708057,
+      "sl": 1823.2260552995674,
+      "tp": 1859.657889400865,
+      "placed": 1794886536,
+      "timeout": 60
+    }
+  },
   "realized_pnl": -22.7114530242795
 }
